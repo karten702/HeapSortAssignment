@@ -17,8 +17,10 @@ public class Main {
         int counter = 0;
 
         try {
-            CsvReader reader = new CsvReader("/main/Resources/ks-projects-201801.csv");
+            CsvReader reader = new CsvReader("/main/Resources/ks-projects-201801-clean.csv");
             System.out.println("Start reading csv...");
+
+
 
             startTime = System.nanoTime();
             List<Kickstarter> projects = reader.getContent();

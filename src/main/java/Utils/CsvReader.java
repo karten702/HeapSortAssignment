@@ -30,19 +30,21 @@ public class CsvReader {
         int counter = 0;
         while( (line=reader.readLine()) !=null) {
             try {
+                line = line.replace("\"", "");
                 String[] projectString = line.split(splitter);
-                //Kickstarter project = new Kickstarter(Integer.parseInt(projectString[0]), Double.parseDouble(projectString[8]), Double.parseDouble(projectString[6]), projectString[2], projectString[1]);
-                if(counter != 0)
-                    projectList.add(new Kickstarter(Integer.parseInt(projectString[0]),
-                            Double.parseDouble(projectString[8]),
-                            Double.parseDouble(projectString[6]),
-                            projectString[2],
-                            projectString[1]));
 
-                counter++;
+                if(counter != 0)
+                    projectList.add(new Kickstarter(Integer.parseInt(projectString[1]),
+                            Double.parseDouble(projectString[9]),
+                            Double.parseDouble(projectString[7]),
+                            projectString[3],
+                            projectString[2]));
             }
             catch (NumberFormatException e){
                 crashes.add("Crashed :( - Counter nr: " + counter);
+            }
+            finally {
+                counter++;
             }
         }
         in.close();
