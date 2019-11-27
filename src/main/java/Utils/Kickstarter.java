@@ -1,4 +1,4 @@
-package main.java;
+package main.java.Utils;
 
 public class Kickstarter implements Comparable<Kickstarter> {
 

@@ -1,6 +1,6 @@
-package main.java.Utils;
+package main.java.Sequential;
 
-import main.java.Kickstarter;
+import main.java.Utils.Kickstarter;
 
 import java.util.List;
 

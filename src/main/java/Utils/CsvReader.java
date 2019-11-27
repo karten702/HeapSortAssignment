@@ -1,7 +1,6 @@
 package main.java.Utils;
 
-import main.java.Kickstarter;
-import main.java.Main;
+import main.java.Sequential.Main;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,12 +1,13 @@
-package main.java;
+package main.Parallel;
 
+import main.java.Sequential.HeapSort;
 import main.java.Utils.CsvReader;
-import main.java.Utils.HeapSort;
+import main.java.Utils.Kickstarter;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.List;
 
-public class Main {
+public class Parallell {
 
     public static void main(String[] args) {
 
@@ -20,21 +21,10 @@ public class Main {
             CsvReader reader = new CsvReader("/main/Resources/ks-projects-201801-clean.csv");
             System.out.println("Start reading csv...");
 
-
-
             startTime = System.nanoTime();
             List<Kickstarter> projects = reader.getContent();
             endTime = System.nanoTime();
             elapsedRead = endTime-startTime;
-
-            for (Kickstarter project : projects) {
-                if (counter < 10) {
-                    System.out.println(project);
-                    counter++;
-                }
-                else
-                    break;
-            }
 
             System.out.println("\nsorting project list of size: " + projects.size() + "\n");
             startTime = System.nanoTime();
@@ -59,6 +49,6 @@ public class Main {
         catch (IOException e){
             e.printStackTrace();
         }
-    }
 
+    }
 }
