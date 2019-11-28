@@ -41,7 +41,7 @@ public class Main {
             HeapSort.heapSort(projects);
             endTime = System.nanoTime();
             elapsedSort = endTime - startTime;
-
+            System.out.println("Distinct project size: " + projects.stream().distinct().count());
             counter = 0;
             for (Kickstarter project : projects) {
                 if (counter < 10) {
