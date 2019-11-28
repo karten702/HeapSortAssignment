@@ -11,7 +11,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class Parallell {
 
-    final static int NUM_JOBS = 4;
+    final static int NUM_JOBS = 8;
 
     public static void main(String[] args) {
         CountDownLatch countDownLatch = new CountDownLatch(NUM_JOBS);
@@ -40,11 +40,11 @@ public class Parallell {
                 threadList.add(new MyRunable(newList, "SomeThread" + threadCounter++, countDownLatch));
             }
             System.out.println("--------Starting all threads--------");
-            threadList.forEach(MyRunable::run);
+
+            threadList.parallelStream().forEach(MyRunable::run);
 
             System.out.println("--------Starting waiting for all threads--------");
             try {
-
                 countDownLatch.await();
             }catch (Exception e){
                 e.printStackTrace();
@@ -52,12 +52,15 @@ public class Parallell {
             System.out.println("--------Merging for all threads--------");
             List<Kickstarter> comb1 = Merge(threadList.get(0).getListToSort(), threadList.get(1).getListToSort());
             List<Kickstarter> comb2 = Merge(threadList.get(2).getListToSort(), threadList.get(3).getListToSort());
-            List<Kickstarter> sortedProjects = Merge(projects, comb1, comb2);
+            List<Kickstarter> comb3 = Merge(threadList.get(4).getListToSort(), threadList.get(5).getListToSort());
+            List<Kickstarter> comb4 = Merge(threadList.get(6).getListToSort(), threadList.get(7).getListToSort());
+            List<Kickstarter> sortedProjects1 = Merge(comb1, comb2);
+            List<Kickstarter> sortedProjects2 = Merge(comb3, comb4);
+            List<Kickstarter> sortedProjects = Merge(projects, sortedProjects1, sortedProjects2);
             endTime = System.nanoTime();
 
             elapsedSort = endTime - startTime;
             System.out.println("Sorted project size: " + sortedProjects.size());
-            System.out.println("Distinct project size: " + sortedProjects.stream().distinct().count());
             for (Kickstarter project : sortedProjects) {
                 if (counter < 10) {
                     System.out.println(project);
