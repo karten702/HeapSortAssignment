@@ -7,20 +7,18 @@ import java.util.concurrent.CountDownLatch;
 
 public class MyRunable implements Runnable {
     private List<Kickstarter> listToSort;
-    private String name;
     private CountDownLatch countDownLatch;
 
-    public MyRunable(List<Kickstarter> listToSort, String name, CountDownLatch countDownLatch) {
+    public MyRunable(List<Kickstarter> listToSort, CountDownLatch countDownLatch) {
         this.listToSort = listToSort;
-        this.name = name;
         this.countDownLatch = countDownLatch;
     }
 
     @Override
     public void run() {
-        System.out.println("Started sorting: " + name);
+        //System.out.println("Started sorting: " + name);
         HeapSortParallel.heapSort(listToSort);
-        System.out.println("Done sorting: " + name);
+        //System.out.println("Done sorting: " + name);
         countDownLatch.countDown();
     }
 

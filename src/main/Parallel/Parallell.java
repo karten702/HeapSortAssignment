@@ -1,6 +1,5 @@
 package main.Parallel;
 
-import com.sun.scenario.effect.Merge;
 import main.java.Utils.CsvReader;
 import main.java.Utils.Kickstarter;
 
@@ -37,19 +36,19 @@ public class Parallell {
             int threadCounter = 1;
             for (List<Kickstarter> kickstarters : choppedList) {
                 List<Kickstarter> newList = new ArrayList<>(kickstarters);
-                threadList.add(new MyRunable(newList, "SomeThread" + threadCounter++, countDownLatch));
+                threadList.add(new MyRunable(newList, countDownLatch));
             }
-            System.out.println("--------Starting all threads--------");
+            //System.out.println("--------Starting all threads--------");
 
             threadList.parallelStream().forEach(MyRunable::run);
 
-            System.out.println("--------Starting waiting for all threads--------");
+            //System.out.println("--------Starting waiting for all threads--------");
             try {
                 countDownLatch.await();
             }catch (Exception e){
                 e.printStackTrace();
             }
-            System.out.println("--------Merging for all threads--------");
+            //System.out.println("--------Merging for all threads--------");
             List<Kickstarter> comb1 = Merge(threadList.get(0).getListToSort(), threadList.get(1).getListToSort());
             List<Kickstarter> comb2 = Merge(threadList.get(2).getListToSort(), threadList.get(3).getListToSort());
             List<Kickstarter> comb3 = Merge(threadList.get(4).getListToSort(), threadList.get(5).getListToSort());
