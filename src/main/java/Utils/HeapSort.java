@@ -1,4 +1,4 @@
-package main.java.Sequential;
+package main.java.Utils;
 
 import main.java.Utils.Kickstarter;
 
@@ -31,10 +31,10 @@ public class HeapSort {
         int leftChildIdx  = 2*i + 1; // left = 2*i + 1
         int rightChildIdx  = 2*i + 2; // right = 2*i + 2
 
-        if (leftChildIdx  < heapSize && projects.get(leftChildIdx).compareTo(projects.get(largest)) < 0)
+        if (leftChildIdx  < heapSize && projects.get(leftChildIdx).compareTo(projects.get(largest)) > 0)
             largest = leftChildIdx;
 
-        if (rightChildIdx  < heapSize && projects.get(rightChildIdx).compareTo(projects.get(largest)) < 0)
+        if (rightChildIdx  < heapSize && projects.get(rightChildIdx).compareTo(projects.get(largest)) > 0)
             largest = rightChildIdx ;
 
         // If largest is not root

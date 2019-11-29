@@ -1,5 +1,6 @@
 package main.java.Sequential;
 
+import main.java.Utils.HeapSort;
 import main.java.Utils.Kickstarter;
 import main.java.Utils.CsvReader;
 
@@ -20,21 +21,10 @@ public class Main {
             CsvReader reader = new CsvReader("/main/Resources/ks-projects-201801-clean.csv");
             System.out.println("Start reading csv...");
 
-
-
             startTime = System.nanoTime();
             List<Kickstarter> projects = reader.getContent();
             endTime = System.nanoTime();
             elapsedRead = endTime-startTime;
-
-            for (Kickstarter project : projects) {
-                if (counter < 10) {
-                    System.out.println(project);
-                    counter++;
-                }
-                else
-                    break;
-            }
 
             System.out.println("\nsorting project list of size: " + projects.size() + "\n");
             startTime = System.nanoTime();
@@ -53,8 +43,6 @@ public class Main {
             }
 
             System.out.println("Read time: " + elapsedRead/1000000 + " - Sort time: " + elapsedSort/1000000);
-            //projects.forEach(System.out::println);
-
         }
         catch (IOException e){
             e.printStackTrace();

@@ -23,52 +23,41 @@ public class Kickstarter implements Comparable<Kickstarter> {
         return "Name: " + name + " - Category: " + category + " - Pledged: " + pledged + " - Goal: " + goal + " - percentage: " + percentage;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public double getPledged() {
-        return pledged;
-    }
-
-    public void setPledged(double pledged) {
-        this.pledged = pledged;
-    }
-
-    public double getGoal() {
-        return goal;
-    }
-
-    public void setGoal(double goal) {
-        this.goal = goal;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getPercentage() {
-        return percentage;
-    }
-
-    public void setPercentage(double percentage) {
-        this.percentage = percentage;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Kickstarter proj = (Kickstarter) obj;
+        return this.id == proj.id;
     }
 
     @Override
     public int compareTo(Kickstarter o) {
-        return Double.compare(this.percentage, o.percentage);
+        if (this.percentage < o.percentage)
+            return 1;           // Neither val is NaN, thisVal is smaller
+        if (this.percentage > o.percentage)
+            return -1;            // Neither val is NaN, thisVal is larger
+
+        // Cannot use doubleToRawLongBits because of possibility of NaNs.
+        long thisBits    = Double.doubleToLongBits(this.percentage);
+        long anotherBits = Double.doubleToLongBits(o.percentage);
+        if (thisBits != anotherBits)
+            return thisBits > anotherBits ? -1 : 1;
+
+        if (this.goal < o.goal)
+            return 1;           // Neither val is NaN, thisVal is smaller
+        if (this.goal > o.goal)
+            return -1;            // Neither val is NaN, thisVal is larger
+
+        // Cannot use doubleToRawLongBits because of possibility of NaNs.
+        thisBits    = Double.doubleToLongBits(this.goal);
+        anotherBits = Double.doubleToLongBits(o.goal);
+        if (thisBits != anotherBits)
+            return thisBits > anotherBits ? -1 : 1;
+
+        return Integer.compare(this.id, o.id);
+
     }
 }

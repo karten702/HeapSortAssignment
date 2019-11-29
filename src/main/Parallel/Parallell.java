@@ -13,7 +13,7 @@ public class Parallell {
     final static int NUM_JOBS = 8;
 
     public static void main(String[] args) {
-        CountDownLatch countDownLatch = new CountDownLatch(NUM_JOBS);
+        //CountDownLatch countDownLatch = new CountDownLatch(NUM_JOBS);
 
         long elapsedRead;
         long elapsedSort;
@@ -31,35 +31,12 @@ public class Parallell {
             elapsedRead = endTime-startTime;
 
             startTime = System.nanoTime();
-            List<List<Kickstarter>> choppedList = chunkList(projects, NUM_JOBS);
-            List<MyRunable> threadList = new ArrayList<>();
-            int threadCounter = 1;
-            for (List<Kickstarter> kickstarters : choppedList) {
-                List<Kickstarter> newList = new ArrayList<>(kickstarters);
-                threadList.add(new MyRunable(newList, countDownLatch));
-            }
-            //System.out.println("--------Starting all threads--------");
-
-            threadList.parallelStream().forEach(MyRunable::run);
-
-            //System.out.println("--------Starting waiting for all threads--------");
-            try {
-                countDownLatch.await();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            //System.out.println("--------Merging for all threads--------");
-            List<Kickstarter> comb1 = Merge(threadList.get(0).getListToSort(), threadList.get(1).getListToSort());
-            List<Kickstarter> comb2 = Merge(threadList.get(2).getListToSort(), threadList.get(3).getListToSort());
-            List<Kickstarter> comb3 = Merge(threadList.get(4).getListToSort(), threadList.get(5).getListToSort());
-            List<Kickstarter> comb4 = Merge(threadList.get(6).getListToSort(), threadList.get(7).getListToSort());
-            List<Kickstarter> sortedProjects1 = Merge(comb1, comb2);
-            List<Kickstarter> sortedProjects2 = Merge(comb3, comb4);
-            List<Kickstarter> sortedProjects = Merge(projects, sortedProjects1, sortedProjects2);
+            List<Kickstarter> sortedProjects = SortParallel(projects);
             endTime = System.nanoTime();
 
             elapsedSort = endTime - startTime;
             System.out.println("Sorted project size: " + sortedProjects.size());
+            System.out.println("Distinct project size: " + sortedProjects.stream().distinct().count());
             for (Kickstarter project : sortedProjects) {
                 if (counter < 10) {
                     System.out.println(project);
@@ -77,11 +54,32 @@ public class Parallell {
         }
     }
 
+    public static List<Kickstarter> SortParallel(List<Kickstarter> dataset){
+
+        CountDownLatch countDownLatch = new CountDownLatch(8);
+        List<MyRunable> threadList = chunkList(dataset, 8, countDownLatch);
+
+        threadList.parallelStream().forEach(MyRunable::run);
+        try {
+            countDownLatch.await();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        List<Kickstarter> comb1 = Merge(threadList.get(0).getListToSort(), threadList.get(1).getListToSort());
+        List<Kickstarter> comb2 = Merge(threadList.get(2).getListToSort(), threadList.get(3).getListToSort());
+        List<Kickstarter> comb3 = Merge(threadList.get(4).getListToSort(), threadList.get(5).getListToSort());
+        List<Kickstarter> comb4 = Merge(threadList.get(6).getListToSort(), threadList.get(7).getListToSort());
+        List<Kickstarter> sortedProjects1 = Merge(comb1, comb2);
+        List<Kickstarter> sortedProjects2 = Merge(comb3, comb4);
+
+        return Merge(dataset, sortedProjects1, sortedProjects2);
+    }
+
     private static List<Kickstarter> Merge(List<Kickstarter> left, List<Kickstarter> right){
         List<Kickstarter> comb = new ArrayList<>();
         int i = 0, j = 0;
         while (i < left.size() && j < right.size()){
-            if (left.get(i).compareTo(right.get(j)) >= 0)
+            if (left.get(i).compareTo(right.get(j)) <= 0)
                 comb.add(left.get(i++));
             else
                 comb.add(right.get(j++));
@@ -99,7 +97,7 @@ public class Parallell {
     private static List<Kickstarter> Merge(List<Kickstarter> comb, List<Kickstarter> left, List<Kickstarter> right){
         int i = 0, j = 0, k = 0;
         while (i < left.size() && j < right.size()){
-            if (left.get(i).compareTo(right.get(j)) >= 0)
+            if (left.get(i).compareTo(right.get(j)) <= 0)
                 comb.set(k++, left.get(i++));
             else
                 comb.set(k++, right.get(j++));
@@ -114,8 +112,8 @@ public class Parallell {
         return comb;
     }
 
-    private static <T> List<List<T>> chunkList(List<T> list, int chunkSize) {
-        final List<List<T>> lsParts = new ArrayList<>();
+    private static List<MyRunable> chunkList(List<Kickstarter> list, int chunkSize, CountDownLatch countDownLatch) {
+        final List<MyRunable> lsParts = new ArrayList<>();
         final int iChunkSize = list.size() / chunkSize;
         int iLeftOver = list.size() % chunkSize;
         int iTake = iChunkSize;
@@ -129,7 +127,7 @@ public class Parallell {
             else
                 iTake = iChunkSize;
 
-            lsParts.add(new ArrayList<>(list.subList(i, Math.min(iT, i + iTake))) );
+            lsParts.add(new MyRunable(new ArrayList<>(list.subList(i, Math.min(iT, i + iTake))), countDownLatch));
         }
 
         return lsParts;

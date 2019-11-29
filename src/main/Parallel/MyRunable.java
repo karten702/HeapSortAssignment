@@ -1,5 +1,6 @@
 package main.Parallel;
 
+import main.java.Utils.HeapSort;
 import main.java.Utils.Kickstarter;
 
 import java.util.List;
@@ -16,9 +17,9 @@ public class MyRunable implements Runnable {
 
     @Override
     public void run() {
-        //System.out.println("Started sorting: " + name);
-        HeapSortParallel.heapSort(listToSort);
-        //System.out.println("Done sorting: " + name);
+        //System.out.println("Started sorting: " + this.hashCode());
+        HeapSort.heapSort(listToSort);
+        //System.out.println("Done sorting: " + this.hashCode());
         countDownLatch.countDown();
     }
 
