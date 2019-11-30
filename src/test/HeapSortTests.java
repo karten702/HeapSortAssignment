@@ -1,6 +1,6 @@
 package test;
 
-import main.Parallel.Parallell;
+import main.java.Parallel.Parallell;
 import main.java.Utils.CsvReader;
 import main.java.Utils.HeapSort;
 import main.java.Utils.Kickstarter;

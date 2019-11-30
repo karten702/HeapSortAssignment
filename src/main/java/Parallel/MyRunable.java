@@ -1,4 +1,4 @@
-package main.Parallel;
+package main.java.Parallel;
 
 import main.java.Utils.HeapSort;
 import main.java.Utils.Kickstarter;
